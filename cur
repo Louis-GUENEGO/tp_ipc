@@ -1,0 +1,2 @@
+echo "Compilation de tout les .c"
+ls *.c | while read F; do gcc -o `echo $F | cut -d . -f 1 - ` $F; done
