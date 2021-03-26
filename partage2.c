@@ -9,16 +9,23 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "dijkstra.h"
+
+#define CLE 1001
+
+
 int main(void){
   int pid, shmid;
-  char *mem;
+  int semid;
+  int * mem;
   key_t key_shm = 0x99990000;
 
-  if((shmid=shmget(key_shm, 128, IPC_CREAT|IPC_EXCL|SHM_R|SHM_W)) < 0) {
+  if((shmid=shmget(key_shm, sizeof(int), IPC_CREAT|IPC_EXCL|SHM_R|SHM_W)) < 0) {
     perror("shmget");
     exit(-1);
   }
 
+  semid = sem_create(CLE, 1);
 
   pid =fork();
 
@@ -27,11 +34,13 @@ int main(void){
       perror("shmat fils");
       exit(-1);
     }
-    strcpy(mem,"Hello papa");
-    printf("FILS : message pour le pere : %s\n", mem);
-    shmdt(mem);
-    sleep(5);
-    printf("FILS : *meurs*\n");
+    while(1){
+      P(semid);
+      (*mem)++;
+      printf("FILS : %d\n", *mem);
+      sleep(1);
+      V(semid);
+    }
     exit(0);
   }
   else {			// Processus pere
@@ -39,9 +48,17 @@ int main(void){
       perror("shmat pere");
       exit(-1);
     }
+
+    while(1){
+      P(semid);
+      (*mem)++;
+      printf("PERE : %d\n", *mem);
+      sleep(1);
+      V(semid);
+    }
+
     printf("PERE : attente mort du fils\n");
     wait(0); 	// Attente fin du fils
-    printf("PERE : message recu : %s\n", mem);
     shmdt(mem);
   }
   shmctl(shmid, IPC_RMID, NULL);
