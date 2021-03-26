@@ -25,7 +25,5 @@ int main(void) {
     sleep(1);
   }
 
-  printf("truc \n");
-
   return 0;
 }
