@@ -18,6 +18,7 @@ int main(void) {
   else if(pid == 0) { // Fils
     printf("FILS: je suis le fils\n");
     res = execl("/bin/ls","\0","-l","/", NULL);
+    wait(0);
     printf("FILS: je meurs\n");
     exit(0);
   }
