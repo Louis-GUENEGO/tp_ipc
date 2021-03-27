@@ -25,7 +25,7 @@ int main(void) {
 
   else if(pid == 0) { // Fils
     printf("FILS: je suis le fils\n");
-
+	close(p_dest[1]);
     read(p_dest[0], out, 5);
     out[5] = 0;
     printf("%s \n", out);
@@ -34,6 +34,7 @@ int main(void) {
   }
   else { // pere
     printf("PERE: je suis le pere\n");
+    close(p_dest[0]);
     write(p_dest[1], "Salut", 5);
     wait(0);
     printf("PERE: mon fils est mort\n");
