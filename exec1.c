@@ -23,7 +23,7 @@ int main(void) {
   }
   else { // pere
     printf("PERE: je suis le pere\n");
-    //wait(0); // Le pere attend la mort de son fils
+    wait(0); // Le pere attend la mort de son fils
     printf("PERE: mon fils est mort\n");
     exit(0);
   }
